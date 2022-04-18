@@ -1,5 +1,5 @@
 <template>
-  <div id="game">
+  <div id="game" v-if="game.level">
     <NonoLevel :level="game.level" />
     <NonoHints :data="cols()" type="cols" />
     <NonoHints :data="rows()" type="rows" />
@@ -8,22 +8,32 @@
 </template>
 
 <script setup lang="ts">
-import game from "../../assets/2.json";
+import axios from "axios";
 import NonoHints from "./NonoHints.vue";
 import NonoLevel from "./NonoLevel.vue";
 import NonoBoard from "./NonoBoard.vue";
+import { onMounted, ref } from "vue";
+
+interface Game {
+  level: number;
+  rows: number;
+  cols: number;
+  solution: Array<number[]>;
+}
+
+let game = ref({} as Game);
 
 const win = () => alert("GG YOU'VE WON!");
 
-const rows = (): Array<number[]> => game.solution;
+const rows = (): Array<number[]> => game.value.solution;
 
 const cols = (): Array<number[]> => {
   let cols = [];
 
-  for (let i = 0; i < game.cols; i++) {
+  for (let i = 0; i < game.value.cols; i++) {
     let col = [];
 
-    for (let row of game.solution) {
+    for (let row of game.value.solution) {
       col.push(row[i]);
     }
 
@@ -32,6 +42,11 @@ const cols = (): Array<number[]> => {
 
   return cols;
 };
+
+onMounted(async () => {
+  const res = await axios.get("http://localhost:8080/1.json");
+  game.value = res.data;
+});
 </script>
 
 <style scoped>
