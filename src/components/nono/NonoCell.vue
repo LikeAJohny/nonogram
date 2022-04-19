@@ -46,5 +46,6 @@ const cellContent = computed(() => (props.state === 1 ? "X" : ""));
 }
 .cell.borderless {
   border: none;
+  cursor: default;
 }
 </style>

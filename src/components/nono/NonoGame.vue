@@ -1,19 +1,21 @@
 <template>
   <div id="game" v-if="game.level">
     <NonoLevel :level="game.level" />
-    <NonoHints :data="cols()" type="cols" />
-    <NonoHints :data="rows()" type="rows" />
+    <NonoHints :data="cols()" type="cols" v-if="!won" />
+    <NonoHints :data="rows()" type="rows" v-if="!won" />
     <NonoBoard :game="game" @win="win" />
   </div>
 </template>
 
 <script setup lang="ts">
-import game from "../../assets/levels/1.json";
+import { ref } from "vue";
+import game from "../../assets/levels/2.json";
 import NonoHints from "./NonoHints.vue";
 import NonoLevel from "./NonoLevel.vue";
 import NonoBoard from "./NonoBoard.vue";
 
-const win = () => console.log("GG YOU'VE WON!");
+const won = ref(false);
+const win = () => (won.value = true);
 
 const rows = (): Array<number[]> => game.solution;
 
