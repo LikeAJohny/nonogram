@@ -3,37 +3,27 @@
     <NonoLevel :level="game.level" />
     <NonoHints :data="cols()" type="cols" />
     <NonoHints :data="rows()" type="rows" />
-    <NonoBoard :game="game" @complete="win" />
+    <NonoBoard :game="game" @win="win" />
   </div>
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
+import game from "../../assets/levels/1.json";
 import NonoHints from "./NonoHints.vue";
 import NonoLevel from "./NonoLevel.vue";
 import NonoBoard from "./NonoBoard.vue";
-import { onMounted, ref } from "vue";
 
-interface Game {
-  level: number;
-  rows: number;
-  cols: number;
-  solution: Array<number[]>;
-}
+const win = () => console.log("GG YOU'VE WON!");
 
-let game = ref({} as Game);
-
-const win = () => alert("GG YOU'VE WON!");
-
-const rows = (): Array<number[]> => game.value.solution;
+const rows = (): Array<number[]> => game.solution;
 
 const cols = (): Array<number[]> => {
   let cols = [];
 
-  for (let i = 0; i < game.value.cols; i++) {
+  for (let i = 0; i < game.cols; i++) {
     let col = [];
 
-    for (let row of game.value.solution) {
+    for (let row of game.solution) {
       col.push(row[i]);
     }
 
@@ -42,11 +32,6 @@ const cols = (): Array<number[]> => {
 
   return cols;
 };
-
-onMounted(async () => {
-  const res = await axios.get("http://localhost:8080/1.json");
-  game.value = res.data;
-});
 </script>
 
 <style scoped>
