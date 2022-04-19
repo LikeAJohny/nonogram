@@ -2,7 +2,11 @@
   <div class="board">
     <div class="row" v-for="(_, ri) in grid" :key="ri">
       <div class="cell" v-for="(_, ci) in grid" :key="ci">
-        <NonoCell :state="grid[ri][ci]" @change="updateCell($event, ri, ci)" />
+        <NonoCell
+          :state="grid[ri][ci]"
+          @change="updateCell($event, ri, ci)"
+          :disabled="won"
+        />
       </div>
     </div>
   </div>
@@ -17,9 +21,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "complete", value: boolean): void;
+  (e: "win", value: boolean): void;
 }>();
 
+let won = ref(false);
 let grid = ref(
   new Array(props.game.rows)
     .fill(0)
@@ -29,7 +34,10 @@ let grid = ref(
 const updateCell = (state: number, ri: number, ci: number): void => {
   grid.value[ri][ci] = state;
 
-  if (isWin()) emit("complete", true);
+  if (isWin()) {
+    won.value = true;
+    emit("win", true);
+  }
 };
 
 const isWin = (): boolean => {
