@@ -24,6 +24,7 @@ const state = reactive({ won: false, grid: generateGrid() });
 watch(
   () => props.level,
   () => {
+    state.won = false;
     state.grid = generateGrid();
   }
 );

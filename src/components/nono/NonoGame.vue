@@ -32,11 +32,20 @@ async function onSelectLevel(e: Event): Promise<void> {
   state.level = await getLevel(id);
 }
 
-const win = () => (state.won = true);
+function win() {
+  state.won = true;
 
-const rows = (): Grid => state.level.solution;
+  setTimeout(async () => {
+    state.won = false;
+    state.level = await getLevel(state.level.no + 1);
+  }, 3000);
+}
 
-const cols = (): Grid => {
+function rows(): Grid {
+  return state.level.solution;
+}
+
+function cols(): Grid {
   let cols = [];
 
   for (let i = 0; i < state.level.cols; i++) {
@@ -50,7 +59,7 @@ const cols = (): Grid => {
   }
 
   return cols;
-};
+}
 </script>
 
 <style scoped>
