@@ -19,15 +19,15 @@ const props = defineProps<{
   disabled: boolean;
 }>();
 
-const emit = defineEmits<{
-  (e: "change", value: number): void;
-}>();
+const emit = defineEmits<{ (e: "change", value: number): void }>();
 
 const update = () => {
   if (!props.disabled) emit("change", props.state === 1 ? 0 : 1);
 };
 
-const cellContent = computed(() => (props.state === 1 ? "X" : ""));
+const cellContent = computed(() =>
+  props.state === 1 && !props.disabled ? "X" : ""
+);
 </script>
 
 <style scoped>

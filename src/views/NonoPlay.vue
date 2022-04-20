@@ -1,7 +1,8 @@
 <template>
-  <div class="nono-play">
+  <Suspense>
     <NonoGame />
-  </div>
+    <template #fallback> Loading... </template>
+  </Suspense>
 </template>
 
 <script setup lang="ts">

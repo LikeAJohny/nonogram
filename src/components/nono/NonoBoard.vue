@@ -1,11 +1,11 @@
 <template>
   <div class="board">
-    <div class="row" v-for="(_, ri) in grid" :key="ri">
-      <div class="cell" v-for="(_, ci) in grid" :key="ci">
+    <div class="row" v-for="(_, ri) in state.grid" :key="ri">
+      <div class="cell" v-for="(_, ci) in state.grid" :key="ci">
         <NonoCell
-          :state="grid[ri][ci]"
+          :state="state.grid[ri][ci]"
           @change="updateCell($event, ri, ci)"
-          :disabled="won"
+          :disabled="state.won"
         />
       </div>
     </div>
@@ -13,36 +13,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, watch } from "vue";
 import NonoCell from "./NonoCell.vue";
+import type { Level } from "../../types/level";
 
-const props = defineProps<{
-  game: { rows: number; cols: number; solution: Array<number[]> };
-}>();
+const props = defineProps<{ level: Level }>();
+const emit = defineEmits<{ (e: "win", value: boolean): void }>();
+const state = reactive({ won: false, grid: generateGrid() });
 
-const emit = defineEmits<{
-  (e: "win", value: boolean): void;
-}>();
-
-let won = ref(false);
-let grid = ref(
-  new Array(props.game.rows)
-    .fill(0)
-    .map(() => new Array(props.game.cols).fill(0))
+watch(
+  () => props.level,
+  () => {
+    state.grid = generateGrid();
+  }
 );
 
-const updateCell = (state: number, ri: number, ci: number): void => {
-  grid.value[ri][ci] = state;
+function generateGrid() {
+  return new Array(props.level.rows)
+    .fill(0)
+    .map(() => new Array(props.level.cols).fill(0));
+}
+
+function updateCell(num: number, ri: number, ci: number): void {
+  state.grid[ri][ci] = num;
 
   if (isWin()) {
-    won.value = true;
+    state.won = true;
     emit("win", true);
   }
-};
+}
 
-const isWin = (): boolean => {
-  return JSON.stringify(props.game.solution) === JSON.stringify(grid.value);
-};
+function isWin(): boolean {
+  return JSON.stringify(props.level.solution) === JSON.stringify(state.grid);
+}
 </script>
 
 <style scoped>

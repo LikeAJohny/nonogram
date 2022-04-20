@@ -23,16 +23,17 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import type { Grid } from "../../types/level";
 
 const props = defineProps<{
-  data: Array<number[]>;
+  grid: Grid;
   type: "rows" | "cols";
 }>();
 
 const hints = computed(() => {
   let hints = [];
 
-  for (let line of props.data) {
+  for (let line of props.grid) {
     const hint = line.reduce((ac: number[], x: number, i: number) => {
       if (i !== 0 && x === 1) ac[ac.length - 1] += x;
       else ac.push(x);
