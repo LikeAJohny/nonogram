@@ -14,7 +14,8 @@ const router = createRouter({
     },
     {
       path: "/create",
-      redirect: "play",
+      name: "create",
+      component: () => import("../views/NonoCreate.vue"),
     },
     {
       path: "/edit",
